@@ -1,0 +1,46 @@
+.article_content{
+    display: flex;
+    flex-direction: row;
+}
+
+.flex{
+    display: flex;
+}
+
+td .btn{
+    justify-content: center;
+}
+
+.article_content img{
+    width: 80px;
+    height: 80px;
+}
+
+.article_content .content_detail{
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.article_content .content_detail p{
+    margin-top: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+
+.fl{
+    float: left;
+}
+
+.search_content .search_com{
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.search_content p{
+    text-align: center;
+}

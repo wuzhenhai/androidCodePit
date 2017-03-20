@@ -1,0 +1,48 @@
+<div class="page-content">
+    <div class="col-sm-6 pull-right">
+        <span class="btn btn-sm btn-primary pull-right" onclick="javascript:window.location.href = 'add_topic_info'">
+            添加
+            <i class="icon-reply icon-only"></i>
+        </span>
+    </div>
+    <div class="page-header">
+        <h1>
+            {:model('menu')->getName()} 
+        </h1>
+    </div><!-- /.page-header -->
+
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <table id="simple-table" class="table  table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th class="detail-col">序号</th>
+                                <th>专题名</th>
+                                <th>所属模块</th>
+                                <!--<th>管理员操作</th>-->
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {volist name="lists" id="vo"}
+                            <tr>
+                                <td>{$vo.topic_id}</td>
+                                <td>{$vo.topic_name}</td>
+                                <td>{$vo.module_name}</td>
+                            </tr>
+                            {/volist}    
+                        </tbody>
+                    </table>
+                </div><!-- /.span -->
+            </div><!-- /.row -->
+
+            <!-- PAGE CONTENT ENDS -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</div><!-- /.page-content -->
+
+
+

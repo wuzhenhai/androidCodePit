@@ -1,0 +1,218 @@
+<div class="page-content">
+    <div class="col-sm-6 pull-right">
+        <span class="btn btn-sm btn-primary pull-right" onclick="javascript:window.location.href = 'add_article_info'">
+            添加
+            <i class="icon-reply icon-only"></i>
+        </span>
+    </div>
+    <div class="page-header">
+        <h1>
+            <!--{:model('menu')->getName()} {gt name="$Request.get.group_id" value="0"} [{:model('AdminGroup')->getGroupName($Request.get.group_id)}]{/gt}-->
+
+        </h1>
+    </div><!-- /.page-header -->
+    <form name="form1" action="/admin/Article/index" method="POST">
+
+    <div class="search_content flex ">
+        <!--<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">-->
+            <!--<span class="caret"></span>-->
+        <!--</button>-->
+
+        <div class="search_com" style="width: 150px">
+            <p>语言类别</p>
+            <select id="tech_select"  class="small " name="tech_id" style="width: 100%">
+                <option value="0" >--请选择--</option>
+                {volist name="tech_list" id="tech"}
+                <option class="col-xs-10 col-sm-5"     value="{$tech.tech_id}">{$tech.tech_name}</option>
+                {/volist}
+            </select>
+        </div>
+
+        <div class="search_com" style="width: 150px">
+            <p>模块类别</p>
+            <select  id="module_select" class="small " name="module_id" style="width: 100%">
+                <option value="0" >--请选择--</option>
+            </select>
+        </div>
+
+        <div class="search_com" style="width: 150px">
+            <p>专题</p>
+            <select  id="topic_select" class="small " name="topic_id" style="width: 100%">
+                <option value="0" >--请选择--</option>
+            </select>
+        </div>
+
+        <div class="search_com">
+            <p>文章标题</p>
+            <input type="text" name="article_title" value="{$search_title|default=$search_title}">
+        </div>
+
+        <div class="t-list" style="align-self: flex-end;margin-left: 100px;">
+            <button  type="submit" class="button button-3d button-action button-circle button-jumbo buttons">搜索</button>
+        </div>
+
+
+    </div>
+    </form>
+
+    <!--<button id="ajaxTest" style="width: 100px;height: 50px" onclick="loadXMLDoc()">AJAX请求</button>-->
+
+
+    <div class="row " style="margin-top: 1rem">
+        <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <table id="simple-table" class="table  table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th class="center">
+                                    <label class="pos-rel">
+                                        <input type="checkbox" class="ace" />
+                                        <span class="lbl"></span>
+                                    </label>
+                                </th>
+                                <th class="detail-col">序号</th>
+                                <th>文章名</th>
+                                <th>所属类别</th>
+                                <th>难度级别</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+
+                        <tbody >
+                            {volist name="lists" id="vo"}
+                            <tr>
+                                <td class="center " style="text-align: center;vertical-align: middle">
+                                    <label class="pos-rel">
+                                        <input type="checkbox" class="ace" />
+                                        <span class="lbl"></span>
+                                    </label>
+                                </td>
+                                <td style="text-align: center;vertical-align: middle" >{$vo.article_id}</td>
+
+                                <td>
+                                    <div class="article_content">
+                                        <img src="{$vo.article_pic}">
+
+                                        <div class="content_detail" >
+                                            <h4 style="color: #000000;font-family: '微软雅黑'"><strong>标题：{$vo.article_title}</strong></h4>
+                                            <a class="button-small button button-pill button-primary" href="{$vo.article_url}" style="display: inline-block;width: 100px"  target="_blank">链接</a>
+                                            <!--<p class="text-danger" style="max-width: 700px">简介：{$vo.article_content}</p>-->
+                                            <p>{$vo.create_time|date='Y-m-d H:i:s',###}<span
+                                                    style="padding-left: 50px"/> 发布人：{$vo.user_name}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button  style="display: block;"  >{$vo.tech_name}</button>
+                                    <button  style="display: block;margin-top: 0.3rem" >{$vo.module_name}</button>
+                                    <button  style="display: block;margin-top: 0.3rem"  >{$vo.topic_name}</button>
+
+                                </td>
+
+                                {if condition="$vo.article_diff eq 1"}
+                                <td  class="flex btn btn-primary ">入门</td>
+                                {elseif condition="$vo.article_diff eq 2"/}
+                                <td  class="flex btn btn-info  btn-warning ">中级</td>
+                                {else /}
+                                <td  class="flex btn btn-danger ">高级</td>
+                                {/if}
+
+
+
+
+                                <td>
+                                    {neq name="vo['article_id']" value="1"}
+                                    <div class="hidden-sm hidden-xs btn-group">
+
+                                        <a href='javascript:void(0)' onclick="return alert_del('{:url(\"del\",\"article_id=$vo[article_id]\")}', '确认要删除『 article_id={$vo.article_id} 』这条记录吗？');"
+                                            <span style="text-align: center">
+                                                 <button class="button button-glow button-box button-action button-caution"><i class="fa fa-trash-o"></i></button>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div class="hidden-md hidden-lg">
+                                        <div class="inline pos-rel">
+                                            <span class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+                                                <i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+                                            </span>
+                                            <ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+                                                <li>
+                                                    <a href='javascript:void(0)' onclick="return alert_del('{:url(\"del\",\"article_id=$vo[article_id]")}', '确认要删除『 id={$vo.article_id} 』这条记录吗？');" class="tooltip-error" data-rel="tooltip" title="Delete">
+                                                    <span class="red">
+                                                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {/neq}
+                                </td>
+                            </tr>
+                            {/volist}    
+                        </tbody>
+                    </table>
+                    {$page}
+                </div><!-- /.span -->
+            </div><!-- /.row -->
+             
+            <!-- PAGE CONTENT ENDS -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</div><!-- /.page-content -->
+
+<script>
+
+    $("#tech_select").change(function () {
+
+        var tech_name = $(this).find("option:selected").text();
+        var tech_id = $(this).find("option:selected").val();
+
+        $.post("/admin/Article/ajax_tech_list",
+                {
+                    tech_name: tech_name,
+                    tech_id: tech_id,
+                },
+                function (data) {
+//                    $("#module_select").html(data);
+                    console.log(data);
+                    data=JSON.parse(data);
+
+                    var html='<option value="0" >--请选择--</option>';
+                    for(var i=0;i<data.length;i++){
+                        html +='  <option class="col-xs-10 col-sm-5" value="'+data[i].module_id+'">'+data[i].module_name+'</option>';
+                    }
+
+                    $("#module_select").html(html);
+                });
+    });
+
+
+    $("#module_select").change(function () {
+        var module_name = $(this).find("option:selected").text();
+        var module_id = $(this).find("option:selected").val();
+
+        $.post("/admin/Article/ajax_module_list",
+                {
+                    module_name: module_name,
+                    module_id: module_id,
+                },
+                function (data) {
+                    console.log(data);
+                    data=JSON.parse(data);
+                    var html='<option value="0" >--请选择--</option>';
+                    for(var i=0;i<data.length;i++){
+                        html +='  <option class="col-xs-10 col-sm-5" value="'+data[i].topic_id+'">'+data[i].topic_name+'</option>';
+                    }
+                    $("#topic_select").html(html);
+                });
+    });
+
+
+</script>
+
+
+
