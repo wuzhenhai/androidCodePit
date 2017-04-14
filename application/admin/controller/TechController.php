@@ -15,11 +15,6 @@ class TechController extends CommonController {
     }
 
 
-
-    public function add_tech_info(){
-        return $this->fetch();
-    }
-
     /**
      * 添加
      */
@@ -27,7 +22,8 @@ class TechController extends CommonController {
     {
         $data = input();
         if (empty($data['tech_name'])){
-            $this->error('请填写技能类型');
+            //$this->error('请填写技能类型');
+            exit("name缺失");
         }
         $res = Db::name('tech_group')->insert($data);
         if ($res) {
@@ -44,7 +40,8 @@ class TechController extends CommonController {
     {
         $data = input();
         if (empty($data['tech_id'])){
-            $this->error('id缺失');
+            //$this->error('id缺失');
+            exit("id缺失");
         }
         $res = Db::name('tech_group')->where($data)->delete();
         if ($res) {

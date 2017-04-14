@@ -32,11 +32,10 @@
                             <tr>
                                 <td width="5%">{$vo.tech_id}</td>
                                 <td width="85%">{$vo.tech_name}</td>
-                                <td width="10%">
+                                <td width="10%" id="action">
                                     <span class="btn btn-sm btn-primary pull-right" onclick="showEdit({$vo.tech_id},'{$vo.tech_name}')">编辑
                                         <i class="icon-reply icon-only"></i>
                                     </span>
-
                                     <span class="btn btn-sm btn-primary pull-right" onclick="delCheck({$vo.tech_id})">删除
                                         <i class="icon-reply icon-only"></i>
                                     </span>
@@ -74,7 +73,6 @@
                 <button type="button" id="save" class="btn btn-primary" onclick="addTech()">
                     添加
                 </button>
-
                 <button type="button" id="edit" class="btn btn-primary" onclick="editTech()">
                     编辑
                 </button>
@@ -122,6 +120,7 @@
                 location.reload();
             }else{
                 console.log("add");
+                alert(data);
             }
         })
     }
@@ -138,6 +137,7 @@
                 location.reload();
             }else{
                 console.log("del");
+                alert(data);
             }
         })
     }
@@ -159,11 +159,19 @@
             if(data == "success"){
                 location.reload();
             }else{
-                console.log("del");
+                console.log("edit fail");
+                alert(data);
             }
         })
     }
 </script>
+
+<style>
+    #action span{
+        margin-left: 2px;
+        float: left!important;
+    }
+</style>
 
 
 
