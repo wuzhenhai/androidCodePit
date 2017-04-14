@@ -9,7 +9,8 @@ use think\Db;
 class TechController extends CommonController {
 
     public function index() {
-        $res = db('tech_group')->select();
+        $tech=new TechGroup();
+        $res =$tech->getList();
         $this->assign('lists', $res);
         return $this->fetch();
     }
