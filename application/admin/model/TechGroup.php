@@ -11,6 +11,12 @@ namespace application\admin\model;
 
 class TechGroup extends \think\Model
 {
+
+    function getList(){
+       return  $this->select();
+    }
+
+
     public function edit($id,$data=array()){
         $res =  $this->where("tech_id='".$id."'")->find();
         if($res){
@@ -20,4 +26,7 @@ class TechGroup extends \think\Model
             return false;
         }
     }
+
+
+
 }
