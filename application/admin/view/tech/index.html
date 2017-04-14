@@ -1,6 +1,6 @@
 <div class="page-content">
     <div class="col-sm-6 pull-right">
-        <span class="btn btn-sm btn-primary pull-right" onclick="javascript:window.location.href = 'add_tech_info'">
+        <span class="btn btn-sm btn-primary pull-right" onclick="showAdd()">
             添加
             <i class="icon-reply icon-only"></i>
         </span>
@@ -22,7 +22,7 @@
 
                                 <th class="detail-col">序号</th>
                                 <th>组名</th>
-                                <th>文章数量</th>
+                                <th>操作</th>
                                 <!--<th>管理员操作</th>-->
                             </tr>
                         </thead>
@@ -30,9 +30,17 @@
                         <tbody>
                             {volist name="lists" id="vo"}
                             <tr>
-                                <td>{$vo.tech_id}</td>
-                                <td>{$vo.tech_name}</td>
-                                <td>{$vo.article_num}</td>
+                                <td width="5%">{$vo.tech_id}</td>
+                                <td width="85%">{$vo.tech_name}</td>
+                                <td width="10%">
+                                    <span class="btn btn-sm btn-primary pull-right" onclick="showEdit({$vo.tech_id},'{$vo.tech_name}')">编辑
+                                        <i class="icon-reply icon-only"></i>
+                                    </span>
+
+                                    <span class="btn btn-sm btn-primary pull-right" onclick="delCheck({$vo.tech_id})">删除
+                                        <i class="icon-reply icon-only"></i>
+                                    </span>
+                                </td>
                             </tr>
                             {/volist}    
                         </tbody>
@@ -44,6 +52,118 @@
         </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.page-content -->
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    添加技能分类
+                </h4>
+            </div>
+            <div class="modal-body">
+                技能名称：<input title="" id="tech_name" type="text" name="tech_name" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" id="save" class="btn btn-primary" onclick="addTech()">
+                    添加
+                </button>
+
+                <button type="button" id="edit" class="btn btn-primary" onclick="editTech()">
+                    编辑
+                </button>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 信息删除确认 -->
+<div class="modal fade" id="delModal">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">提示信息</h4>
+            </div>
+            <div class="modal-body">
+                <p>您确认要删除吗？</p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="url"/>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a onclick="del()" class="btn btn-primary" data-dismiss="modal">确定</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<script type="text/javascript">
+    function showAdd(){
+        $("#save").show();
+        $("#edit").hide();
+        $('#tech_name').val('');
+        $("#myModalLabel").html("添加技能分类");
+        $("#addModal").modal('show');
+    }
+
+    function addTech(){
+        console.log("add");
+        var tech_name = $('#tech_name').val();
+        $.post("add",{"tech_name":tech_name}, function (data){
+            if(data == "success"){
+                location.reload();
+            }else{
+                console.log("add");
+            }
+        })
+    }
+
+    var del_id = 0;
+    function delCheck(id){
+        del_id = id;
+        $("#delModal").modal('show');
+    }
+
+    function del(){
+        $.post("del",{"tech_id":del_id}, function (data){
+            if(data == "success"){
+                location.reload();
+            }else{
+                console.log("del");
+            }
+        })
+    }
+
+    var edit_id = 0;
+    var edit_name = "";
+    function showEdit(id,name){
+        edit_id = id;
+        $("#save").hide();
+        $("#edit").show();
+        $('#tech_name').val(name);
+        $("#myModalLabel").html("编辑技能分类");
+        $("#addModal").modal('show');
+    }
+
+    function editTech(){
+        edit_name = $('#tech_name').val();
+        $.post("edit",{"tech_id":edit_id,"tech_name":edit_name}, function (data){
+            if(data == "success"){
+                location.reload();
+            }else{
+                console.log("del");
+            }
+        })
+    }
+</script>
 
 
 
