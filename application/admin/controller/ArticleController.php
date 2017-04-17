@@ -8,24 +8,13 @@ class ArticleController extends CommonController {
 
     public function index()
     {
-        $where= $this->get_search_condition();
-        $article = new Article();
-        $lists =$article
-            ->where($where)
-            ->order('create_time desc')
-            ->paginate(10);
-
-
+        $tech = new Article();
+        $res = $tech->getList();
         // 获取分页显示
-        $page = $lists->render();
+        $page = $res->render();
         $this->assign('page', $page);
 
-        $tech_list=Db::name('tech_group')->select();
-        $this->assign("tech_list", $tech_list);
-
-//        // 查询单个数据
-//        $res = $article->getList();
-        $this->assign('lists', $lists);
+        $this->assign('lists', $res);
         return $this->fetch();
     }
 

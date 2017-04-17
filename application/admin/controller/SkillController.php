@@ -13,7 +13,8 @@ class SkillController extends CommonController {
     {
         $tech = new Skill();
         $res = $tech->getList();
-//        // 获取分页显示
+
+     // 获取分页显示
         $page = $res->render();
         $this->assign('page', $page);
 
