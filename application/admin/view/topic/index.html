@@ -10,7 +10,24 @@
             {:model('menu')->getName()}
         </h1>
     </div><!-- /.page-header -->
+    <div style="margin-bottom: 5px">
+        <form name="form" action="index" method="get">
+            <select name="skill_type">
+                <option value="0">请选择</option>
+                {volist name="skill_list" id="vo"}
+                <!--{if condition="$skill_type eq $vo.id"}-->
+                <!--<option value="{$vo.id}" selected="selected">{$vo.skill_name}</option>-->
+                <!--{else}-->
+                <!--<option value="{$vo.id}">{$vo.skill_name}</option>-->
+                <!--{/if}-->
+                <option value="{$vo.id}" {$vo['id']==$skill_type?'selected="selected"':''}>{$vo.skill_name}</option>
+                {/volist}
 
+            </select>
+            <button class="btn btn-sm btn-primary" type="submit"><i class="gicon-search"></i>搜索</button>
+        </form>
+
+    </div>
     <div class="row">
         <div class="col-xs-12">
             <!-- PAGE CONTENT BEGINS -->
@@ -36,7 +53,7 @@
                                 <div class="hidden-sm hidden-xs btn-group">
 
 
-                                    <span class="btn btn-xs btn-info" onclick="showEdit({$vo.id},'{$vo.topic_name}')">
+                                    <span class="btn btn-xs btn-info" onclick="showEdit({$vo.id},'{$vo.topic_name}',{$vo.skill_id})">
                                                 <i class="ace-icon fa fa-pencil bigger-120"></i>
                                             </span>
 
@@ -59,7 +76,7 @@
                                             <li>
                                                 <a class="tooltip-success" data-rel="tooltip" title="Edit">
                                                         <span class="green"
-                                                              onclick="showEdit({$vo.id},'{$vo.topic_name}')">
+                                                              onclick="showEdit({$vo.id},'{$vo.topic_name}',{$vo.skill_id})">
                                                             <i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
                                                         </span>
                                                 </a>
@@ -101,7 +118,15 @@
                 </h4>
             </div>
             <div class="modal-body">
-                技能名称：<input title="" id="topic_name" type="text" name="topic_name"/>
+                专题名称：<input title="" id="topic_name" type="text" name="topic_name"/>
+            </div>
+            <div class="modal-body">
+                技能分类：<select id="skill_list">
+                    <option value="0">请选择</option>
+                    {volist name="skill_list" id="vo"}
+                        <option value="{$vo.id}">{$vo.skill_name}</option>
+                    {/volist}
+                </select>
             </div>
 
             <div class="modal-footer">
@@ -151,14 +176,25 @@
 
     function add() {
         var topic_name = $('#topic_name').val();
-        $.post("add", {"topic_name": topic_name}, function (data) {
-            if (data == "success") {
+        var skill_id = $('#skill_list').val();
+        if(topic_name == ""){
+            alert("请输入专题名称");
+            return;
+        }else if(skill_id==-1){
+            alert("请选择所属技能");
+            return;
+        }
+        $.post("add", {"topic_name": topic_name,"skill_id":skill_id}, function (data) {
+            console.log(data);
+            var res = $.parseJSON(data);
+            if (res['code'] == 0) {
                 location.reload();
             } else {
-                alert(data);
+                alert(res['msg']);
             }
-        })
+        });
     }
+
 
     var del_id = 0;
     function delCheck(id) {
@@ -178,18 +214,28 @@
 
     var edit_id = 0;
     var edit_name = "";
-    function showEdit(id, name) {
+    function showEdit(id, name,skill_id) {
         edit_id = id;
         $("#save").hide();
         $("#edit").show();
-        $('#skill_name').val(name);
-        $("#myModalLabel").html("编辑技能分类");
+        $('#topic_name').val(name);
+        //$('#skill_list').val(skill_id);
+        $("#skill_list option").each(function(){
+            var t_id = $(this).attr("value");
+            //alert($(this).attr("value")+"--"+skill_id);
+            if( t_id == skill_id){
+                $(this).attr('selected', 'selected');
+            }
+        });
+        //$("#skill_list option[value='123']").attr("selected", true);
+        $("#myModalLabel").html("编辑专题");
         $("#addModal").modal('show');
     }
 
     function editSkill() {
-        edit_name = $('#skill_name').val();
-        $.post("edit", {"id": edit_id, "skill_name": edit_name}, function (data) {
+        edit_name = $('#topic_name').val();
+        var skill_id = $('#skill_list').val();
+        $.post("edit", {"id": edit_id, "topic_name": edit_name,"skill_id":skill_id}, function (data) {
             if (data == "success") {
                 location.reload();
             } else {
@@ -198,6 +244,18 @@
             }
         })
     }
+
+
+//    function getTopicById(id){
+//        $.post("ajax_get_topic", {"topic_id": id}, function (data) {
+//            var res = $.parseJSON(data);
+//            if (res["code"] == 0) {
+//               console.log(res["data"]);
+//            } else {
+//                alert(res['msg']);
+//            }
+//        })
+//    }
 </script>
 
 <style>
