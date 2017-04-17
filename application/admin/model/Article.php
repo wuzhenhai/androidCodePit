@@ -14,8 +14,7 @@ namespace application\admin\model;
 class Article extends \think\Model {
 
     public function getList() {
-       $res=  $this->order('article_id', 'asc')
-           ->select();
+       $res=  $this->order('article_id', 'asc')  ->select();
         return $res;
     }
 

@@ -21,7 +21,7 @@
                         <tr>
 
                             <th class="detail-col" width="5%">序号</th>
-                            <th >专题名</th>
+                            <th >组名</th>
                             <th >操作</th>
                             <!--<th>管理员操作</th>-->
                         </tr>
@@ -31,12 +31,12 @@
                         {volist name="lists" id="vo"}
                         <tr>
                             <td width="5%">{$vo.id}</td>
-                            <td width="70%">{$vo.topic_name}</td>
+                            <td width="70%">{$vo.skill_name}</td>
                             <td width="10%">
                                 <div class="hidden-sm hidden-xs btn-group">
 
 
-                                    <span class="btn btn-xs btn-info" onclick="showEdit({$vo.id},'{$vo.topic_name}')">
+                                    <span class="btn btn-xs btn-info" onclick="showEdit({$vo.id},'{$vo.skill_name}')">
                                                 <i class="ace-icon fa fa-pencil bigger-120"></i>
                                             </span>
 
@@ -59,7 +59,7 @@
                                             <li>
                                                 <a class="tooltip-success" data-rel="tooltip" title="Edit">
                                                         <span class="green"
-                                                              onclick="showEdit({$vo.id},'{$vo.topic_name}')">
+                                                              onclick="showEdit({$vo.id},'{$vo.skill_name}')">
                                                             <i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
                                                         </span>
                                                 </a>
@@ -101,18 +101,18 @@
                 </h4>
             </div>
             <div class="modal-body">
-                技能名称：<input title="" id="topic_name" type="text" name="topic_name"/>
+                技能名称：<input title="" id="skill_name" type="text" name="skill_name"/>
             </div>
-
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                 </button>
-                <button type="button" id="save" class="btn btn-primary" onclick="add()">
+                <button type="button" id="save" class="btn btn-primary" onclick="addSkill()">
                     添加
                 </button>
                 <button type="button" id="edit" class="btn btn-primary" onclick="editSkill()">
                     编辑
                 </button>
+
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
@@ -144,14 +144,15 @@
     function showAdd() {
         $("#save").show();
         $("#edit").hide();
-        $('#topic_name').val('');
-        $("#myModalLabel").html("添加专题");
+        $('#skill_name').val('');
+        $("#myModalLabel").html("添加技能分类");
         $("#addModal").modal('show');
     }
 
-    function add() {
-        var topic_name = $('#topic_name').val();
-        $.post("add", {"topic_name": topic_name}, function (data) {
+    function addSkill() {
+        console.log("add");
+        var skill_name = $('#skill_name').val();
+        $.post("add", {"skill_name": skill_name}, function (data) {
             if (data == "success") {
                 location.reload();
             } else {
