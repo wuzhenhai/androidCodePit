@@ -14,17 +14,27 @@ namespace application\admin\model;
 class Article extends \think\Model {
 
     public function getList() {
-       $res=  $this->order('article_id', 'asc')  ->select();
+        $res=  $this->order('id', 'asc') ->paginate(10);
+        $res=$this->getListData($res);
         return $res;
     }
 
 
+    public function getListData($article_list)
+    {
+        foreach ($article_list as $k => $v) {
 
-//    public function getGroupName($group_id) {
-//        return db('article_group')->where(['article_id' => $group_id])->value('article_name');
-//    }
+            //技能
+            $skill_obj = new Skill();
+            $skill_info = $skill_obj->getSkill($v['skill_id'], 'skill_name');
+            $article_list[$k]['skill_name'] = $skill_info['skill_name'];
 
-
-
+            //专题名
+            $topic_obj = new Topic();
+            $topic_info = $topic_obj->getTopicById($v['topic_id']);
+            $article_list[$k]['topic_name'] = $topic_info['topic_name'];
+        }
+        return $article_list;
+    }
 
 }

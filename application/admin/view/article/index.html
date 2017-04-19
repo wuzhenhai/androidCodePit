@@ -1,6 +1,6 @@
 <div class="page-content">
     <div class="col-sm-6 pull-right">
-        <span class="btn btn-sm btn-primary pull-right" onclick="javascript:window.location.href = 'add_article_info'">
+        <span class="btn btn-sm btn-primary pull-right" onclick="showAdd()">
             添加
             <i class="icon-reply icon-only"></i>
         </span>
@@ -47,10 +47,15 @@
             <input type="text" name="article_title" value="{$search_title|default=$search_title}">
         </div>
 
-        <div class="t-list" style="align-self: flex-end;margin-left: 100px;">
-            <button  type="submit" class="button button-3d button-action button-circle button-jumbo buttons">搜索</button>
-        </div>
+        <!--<div class="t-list" style="align-self: flex-end;margin-left: 100px;">-->
+            <!--<button  type="submit" class="button button-3d button-action button-circle button-jumbo buttons">搜索</button>-->
+        <!--</div>-->
 
+        <span class="btn btn-sm btn-primary pull-right"  >
+            搜索
+            <i class="icon-reply icon-only"></i>
+        </span>
+        </div>
 
     </div>
     </form>
@@ -74,6 +79,8 @@
                                 <!--</th>-->
                                 <th class="detail-col">序号</th>
                                 <th>文章</th>
+                                <th>专题名</th>
+                                <th>技能类型</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -88,26 +95,34 @@
                                     <!--</label>-->
                                 <!--</td>-->
                                 <td style="text-align: center;vertical-align: middle" >{$vo.id}</td>
-                                <td > <a href="{$vo.url}" target="_blank" > {$vo.title}</a>
-                                   </td>
+                                <td > <a href="{$vo.url}" target="_blank" > {$vo.title}</a> </td>
+                                <td style="vertical-align: middle;width: 10%" >{$vo.topic_name}</td>
+                                <td style="vertical-align: middle;width: 10%" >{$vo.skill_name}</td>
+
                                 <td width="10%">
                                     <div class="hidden-sm hidden-xs btn-group">
-
-
-                                    <span class="btn btn-xs btn-info" onclick="">
+                                    <span class="btn btn-xs btn-info" onclick="showEdit('{$vo.id}','{$vo.title}','{$vo.url}','{$vo.skill_id}','{$vo.topic_id}')">
                                                 <i class="ace-icon fa fa-pencil bigger-120"></i>
                                             </span>
-
-
-                                        <span class="btn btn-xs btn-danger" onclick="">
+                                        <span class="btn btn-xs btn-danger" onclick="delCheck({$vo.id})">
                                                 <i class="ace-icon fa fa-trash-o bigger-120"></i>
                                             </span>
 
+                                        {if condition="$vo.is_hot eq 1 "}
+                                        <span class="btn btn-xs btn-success" onclick="hot({$vo.id},0)">
+                                                <i class="ace-icon fa fa-arrow-down bigger-120"></i>
+                                            </span>
+                                        {else /}
+                                        <span class="btn btn-xs btn-primary" onclick="hot({$vo.id},1)">
+                                                <i class="ace-icon fa fa-arrow-up bigger-120"></i>
+                                            </span>
+                                        {/if}
                                     </div>
 
                                     <div class="hidden-md hidden-lg">
                                         <div class="inline pos-rel">
-                                            <span class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+                                            <span class="btn btn-minier btn-primary dropdown-toggle"
+                                                  data-toggle="dropdown" data-position="auto">
                                                 <i class="ace-icon fa fa-cog icon-only bigger-110"></i>
                                             </span>
 
@@ -134,64 +149,262 @@
                                     </div>
                                 </td>
                             </tr>
-                            {/volist}    
+                            {/volist}
                         </tbody>
                     </table>
                     {$page}
                 </div><!-- /.span -->
             </div><!-- /.row -->
-             
+
             <!-- PAGE CONTENT ENDS -->
         </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.page-content -->
 
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    添加技能分类
+                </h4>
+            </div>
+            <div class="modal-body">
+                文章名称：<input title="" id="title" type="text" name="title"/>
+            </div>
+            <div class="modal-body">
+                文章链接：<input title="" id="article_url" type="text" name="url"/>
+            </div>
+            <div class="modal-body">
+                是否推荐：<select id="is_hot" style="width:30%">
+                <option value="0">否</option>
+                <option value="1">是</option>
+            </select>
+            </div>
+            <div class="modal-body">
+                技能分类：<select id="skill_list" style="width:30%" >
+                <option value="-1">请选择</option>
+                {volist name="skill_list" id="vo"}
+                <option value="{$vo.id}">{$vo.skill_name}</option>
+                {/volist}
+            </select>
+            </div>
+            <div class="modal-body">
+                专题分类：<select id="topic_list"  style="width:30%" >
+                <option value="-1">请选择</option>
+                {volist name="topic_list" id="vo"}
+                <option value="{$vo.id}">{$vo.topic_name}</option>
+                {/volist}
+            </select>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" id="save" class="btn btn-primary" onclick="add()">
+                    添加
+                </button>
+                <button type="button" id="edit" class="btn btn-primary" onclick="editSkill()">
+                    编辑
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 信息删除确认 -->
+<div class="modal fade" id="delModal">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">提示信息</h4>
+            </div>
+            <div class="modal-body">
+                <p>您确认要删除吗？</p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="url"/>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a onclick="del()" class="btn btn-primary" data-dismiss="modal">确定</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <script>
+    //显示添加框
+    function showAdd() {
+        $("#save").show();
+        $("#edit").hide();
+        $('#topic_name').val('');
+        $("#myModalLabel").html("添加文章");
+        $("#addModal").modal('show');
+    }
 
-    $("#tech_select").change(function () {
+    //根据技能选择专题
+    $("#skill_list").change(function () {
+        var skill_name = $(this).find("option:selected").text();
+        var skill_id = $(this).find("option:selected").val();
 
-        var tech_name = $(this).find("option:selected").text();
-        var tech_id = $(this).find("option:selected").val();
-
-        $.post("/admin/Article/ajax_tech_list",
+        $.post("/admin/Article/ajax_topic_list",
                 {
-                    tech_name: tech_name,
-                    tech_id: tech_id,
+                    skill_name: skill_name,
+                    skill_id: skill_id,
                 },
                 function (data) {
 //                    $("#module_select").html(data);
                     console.log(data);
-                    data=JSON.parse(data);
+                    data = JSON.parse(data);
 
-                    var html='<option value="0" >--请选择--</option>';
-                    for(var i=0;i<data.length;i++){
-                        html +='  <option class="col-xs-10 col-sm-5" value="'+data[i].module_id+'">'+data[i].module_name+'</option>';
+                    var html = '<option value="0" >--请选择--</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        html += '  <option class="col-xs-10 col-sm-5" value="' + data[i].id + '">' + data[i].topic_name + '</option>';
                     }
 
-                    $("#module_select").html(html);
+                    $("#topic_list").html(html);
                 });
     });
 
 
-    $("#module_select").change(function () {
-        var module_name = $(this).find("option:selected").text();
-        var module_id = $(this).find("option:selected").val();
+    //添加文章
+    function add() {
+        var title = $('#title').val(); //标题
+        var url = $('#article_url').val(); //链接
 
-        $.post("/admin/Article/ajax_module_list",
+        var skill_id = $('#skill_list').val();
+        var topic_id = $('#topic_list').val();
+        var is_hot = $('#is_hot').val();
+
+        if (title == "") {
+            alert("请输入专题名称");
+            return;
+        }
+
+        if (url == "") {
+            alert("请输入文章链接");
+            return;
+        }
+
+        if (skill_id == -1) {
+            alert("请选择所属技能");
+            return;
+        }
+
+        if (topic_id == -1) {
+            alert("请选择所属技能");
+            return;
+        }
+
+        $.post("add",
                 {
-                    module_name: module_name,
-                    module_id: module_id,
+                    "title": title,
+                    "url": url,
+                    "is_hot": is_hot,
+                    "skill_id": skill_id,
+                    "topic_id": topic_id
                 },
                 function (data) {
                     console.log(data);
-                    data=JSON.parse(data);
-                    var html='<option value="0" >--请选择--</option>';
-                    for(var i=0;i<data.length;i++){
-                        html +='  <option class="col-xs-10 col-sm-5" value="'+data[i].topic_id+'">'+data[i].topic_name+'</option>';
+                    var res = $.parseJSON(data);
+                    if (res['code'] == 0) {
+                        location.reload();
+                    } else {
+                        alert(res['msg']);
                     }
-                    $("#topic_select").html(html);
                 });
-    });
+    }
+
+
+    //删除文章
+    var del_id = 0;
+    function delCheck(id) {
+        del_id = id;
+        $("#delModal").modal('show');
+    }
+    function del() {
+        $.post("del",
+                {
+                    "id": del_id
+                },
+                function (data) {
+                    if (data == "success") {
+                        location.reload();
+                    } else {
+                        alert(data);
+                    }
+                })
+    }
+
+    //编辑
+    var edit_id = 0;
+    var edit_name = "";
+    function showEdit(
+            id,
+            name,
+            url,
+            skill_id,
+            topic_id
+            ) {
+        edit_id = id;
+        $("#save").hide();
+        $("#edit").show();
+
+        $('#title').val(name); //标题
+        $('#article_url').val(url); //标题
+
+        var s_id = $('#skill_list').val();
+        var t_id = $('#topic_list').val();
+
+
+        $("#skill_list option").each(function(){
+            var t_id = $(this).attr("value");
+            //alert($(this).attr("value")+"--"+skill_id);
+            if( t_id == skill_id){
+                $(this).attr('selected', 'selected');
+            }
+        });
+
+        $("#topic_list option").val(topic_id);
+
+        $("#myModalLabel").html("编辑文章");
+        $("#addModal").modal('show');
+    }
+
+    function editSkill() {
+        edit_name = $('#topic_name').val();
+        var skill_id = $('#skill_list').val();
+        $.post("edit", {"id": edit_id, "topic_name": edit_name,"skill_id":skill_id}, function (data) {
+            if (data == "success") {
+                location.reload();
+            } else {
+                console.log("edit fail");
+                alert(data);
+            }
+        })
+    }
+
+
+    //文章置顶
+    function hot(id, is_hot) {
+        $.post("hot",
+                {
+                    "id": id,
+                    "is_hot": is_hot
+                },
+                function (data) {
+                    if (data == "success") {
+                        location.reload();
+                    } else {
+                        alert(data);
+                    }
+                })
+    }
 
 
 </script>

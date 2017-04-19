@@ -52,7 +52,6 @@
                             <td width="10%">
                                 <div class="hidden-sm hidden-xs btn-group">
 
-
                                     <span class="btn btn-xs btn-info" onclick="showEdit({$vo.id},'{$vo.topic_name}',{$vo.skill_id})">
                                                 <i class="ace-icon fa fa-pencil bigger-120"></i>
                                             </span>
@@ -122,7 +121,7 @@
             </div>
             <div class="modal-body">
                 技能分类：<select id="skill_list">
-                    <option value="0">请选择</option>
+                    <option value="-1">请选择</option>
                     {volist name="skill_list" id="vo"}
                         <option value="{$vo.id}">{$vo.skill_name}</option>
                     {/volist}

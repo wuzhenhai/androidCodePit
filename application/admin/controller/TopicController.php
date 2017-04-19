@@ -29,12 +29,15 @@ class TopicController extends CommonController {
 
         $lists=$topic_obj->getList($where,$page_count,$skill_id);
         $page = $lists->render();//分页
+        $this->assign("page",$page);
+
         //获取技能列表
         $select_skill_list = $topic_obj->getSkillList();
-        //var_dump($select_topic_list);
-        $this->assign("lists",$lists);
-        $this->assign("page",$page);
         $this->assign("skill_list",$select_skill_list);
+
+        $this->assign("lists",$lists);
+
+
         return $this->fetch();
     }
 
@@ -99,7 +102,7 @@ class TopicController extends CommonController {
     public function del()
     {
         $data = input();
-        if (empty($data['id'])){
+        if (empty($data['id'])) {
             //$this->error('id缺失');
             exit("id缺失");
         }

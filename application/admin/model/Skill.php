@@ -25,6 +25,17 @@ class Skill extends \think\Model
         }
     }
 
+    /**
+     * 获取技能信息
+     * @param  int    $skill_id   技能id
+     * @param  string $field   查询的字段名，默认为空，取全部
+     * @return array           技能
+     */
+    public function getSkill($skill_id, $field= ''){
+        $skill_info = $this->where('id ='. $skill_id)->field($field)->find();
+        return $skill_info;
+    }
+
 
 
 }
