@@ -183,3 +183,82 @@ function encry_code($string, $operation = 'ENCODE', $key = '', $expiry = 0) {
         return $keyc . rtrim(strtr(base64_encode($result), '+/', '-_'), '=');
     }
 }
+
+
+/**
+ * 更通用的图片上传处理
+ *
+ * @param array $src_img 上传的图片资源，为$_FILES['filename']格式，一般地filename为img标签的name属性值
+ * @param string $sub_path 图片保存子路径，以'/'开头，但不以'/'结尾，如设置友情链接logo图片子路径为'/other/link'，根路径为/Uploads/image
+ * @param string $img_domain 图片域名，结尾无'/'，未设置则取配置项中IMG_DOMAIN值
+ * @param int $limit_size 图片尺寸限制，如未设置默认2MB
+ * @author zhengzhen
+ * @return string $imgUrl
+ * @todo 首先判断图片大小是否超出预设值，然后判断图片格式是否支持
+ * @todo 创建相应路径并保存图片，转换图片路径为图片URL通过JSON输出到终端（一般为浏览器）
+ *
+ */
+function upImageHandler($src_img, $sub_path, $img_domain = null, $limit_size = null)
+{
+    $tmpFile = $src_img['tmp_name'];
+// echo "<pre>";
+// var_dump($src_img);
+// echo $tmpFile;
+    $tmpFileSize = $src_img['size'];
+    $maxSize = isset($limit_size) ? $limit_size : 2 * pow(1024, 2);
+    if($tmpFileSize > $maxSize)
+    {
+        echo json_encode(array('status' => 0, 'msg' => '图片过大，请上传2MB以内大小图片！'));
+        exit;
+    }
+
+    switch($src_img['type'])
+    {
+        case 'image/gif':
+            $imgExt = '.gif';
+            break;
+        case 'image/jpeg':
+        case 'image/pjpeg'://IE
+            $imgExt = '.jpg';
+            break;
+        case 'image/png':
+        case 'image/x-png'://IE
+            $imgExt = '.png';
+            break;
+        default:
+            break;
+    }
+    if(!isset($imgExt))
+    {
+        echo json_encode(array('status' => 0, 'msg' => '暂不支持该图片格式！'));
+        exit;
+    }
+
+    $savePath = APP_PATH .'../public/Uploads/image' . $sub_path . '/' . date('Y-m');
+    $saveFile = $savePath . '/' . date("YmdHis") . '_' . rand(10000, 99999) . $imgExt;
+
+    //确认保存路径，没有则创建
+    if(!is_dir($savePath))
+    {
+        if(!@mkdir($savePath, 0700, true))
+        {
+            echo json_encode(array('status' => 0, 'msg' => '上传目录创建失败！'));
+            exit;
+        }
+    }
+    //移动文件
+    if(move_uploaded_file($tmpFile, $saveFile) === false)
+    {
+        echo json_encode(array('status' => 0, 'msg' => '图片上传失败！'));
+        exit;
+    }
+//    if(!isset($img_domain))
+//    {
+//        $img_domain = C('IMG_DOMAIN');
+//    }
+    // $imgUrl = str_replace(APP_PATH . 'Uploads', $img_domain . '/Uploads', $saveFile);
+    $imgUrl = str_replace(APP_PATH .'../public/', '/', $saveFile);
+    //echo json_encode(array('status' => 1, 'img_url' => $imgUrl));
+    //exit;
+    return $imgUrl;
+}

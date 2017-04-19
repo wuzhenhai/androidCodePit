@@ -9,8 +9,12 @@ class ArticleController extends CommonController {
 
     public function index()
     {
-        $tech = new Article();
-        $res = $tech->getList();
+        $where = $this->getWhere();
+        $search = input();
+        //var_dump($where);
+        $article = new Article();
+        $res = $article->getList($where,$search);
+
         // 获取分页显示
         $page = $res->render();
         $this->assign('page', $page);
@@ -19,9 +23,43 @@ class ArticleController extends CommonController {
         $topic_obj=new Topic();
         $select_skill_list = $topic_obj->getSkillList();
         $this->assign("skill_list",$select_skill_list);
-
         $this->assign('lists', $res);
         return $this->fetch();
+    }
+
+    //获取查询条件
+    function getWhere(){
+        $where = "";
+        $skill_id = isset($_GET['skill_select_id'])?$_GET['skill_select_id']:-1;
+        $topic_id = isset($_GET['topic_select_id'])?$_GET['topic_select_id']:-1;
+        $is_hot = isset($_GET['hot_select_id'])?$_GET['hot_select_id']:-1;
+        $title= isset($_GET['article_title'])?$_GET['article_title']:"";
+        if($skill_id!=-1){
+            $where .= "skill_id='".$skill_id."'";
+        }
+        if($topic_id!=-1){
+            if($where!=""){
+                $where .= " AND ";
+            }
+            $where .= "topic_id='".$topic_id."'";
+        }
+        if($is_hot!=-1){
+            if($where!=""){
+                $where .= " AND ";
+            }
+            $where .= "is_hot='".$is_hot."'";
+        }
+        if($title!=""){
+            if($where!=""){
+                $where .= " AND ";
+            }
+            $where .= "title LIKE '%".$title."%'";
+        }
+//        $this->assign("skill_id",$skill_id);
+//        $this->assign("topic_id",$topic_id);
+//        $this->assign("is_hot",$is_hot);
+//        $this->assign("title",$title);
+        return $where;
     }
 
 
@@ -44,6 +82,22 @@ class ArticleController extends CommonController {
             $resp['success'] = false;
             $resp['code'] = 1;
             $resp['msg'] = "添加失败";
+            exit(json_encode($resp));
+        }
+    }
+
+    function edit(){
+        $data = input();
+        $topic_obj = new Article();
+        $r = $topic_obj->edit($data);
+        if ($r!==false) {
+            $resp['success'] = true;
+            $resp['code'] = 0;
+            exit(json_encode($resp));
+        } else {
+            $resp['success'] = false;
+            $resp['code'] = 1;
+            $resp['msg'] = "编辑失败";
             exit(json_encode($resp));
         }
     }
@@ -181,6 +235,22 @@ class ArticleController extends CommonController {
             exit("success");
         } else {
             exit("failure");
+        }
+    }
+
+    /**
+     * 文章预览图上传处理
+     *
+     * @author zhengzhen
+     * @return string 返回JSON字符串
+     * @todo 调用upImageHandler函数处理上传图片
+     *
+     */
+    public function uploadHandler()
+    {
+        $imgUrl =  upImageHandler($_FILES['imgFile'], '/article/thumb');
+        if($imgUrl!=""){
+            exit(json_encode(array('status' => 1, 'img_url' => $imgUrl)));
         }
     }
 

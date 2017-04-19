@@ -8,11 +8,11 @@ namespace application\admin\model;
 class  Topic extends \think\Model {
 
 
-    function getList($where='',$page_count,$skill_type){
+    function getList($where='',$page_count,$skill_type,$order='id desc'){
         if($skill_type!=0) {
-            return $this->where($where)->paginate($page_count, false, ['query' => ['skill_type' => $skill_type]]);
+            return $this->where($where)->order($order)->paginate($page_count, false, ['query' => ['skill_type' => $skill_type]]);
         }else{
-            return $this->where($where)->paginate($page_count);
+            return $this->where($where)->order($order)->paginate($page_count);
         }
     }
 

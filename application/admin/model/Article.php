@@ -13,13 +13,16 @@ namespace application\admin\model;
 
 class Article extends \think\Model {
 
-    public function getList() {
-        $res=  $this->order('id', 'asc') ->paginate(10);
-        $res=$this->getListData($res);
+    public function getList($where="",$search=[]) {
+        $res = $this->where($where)->order('id', 'asc') ->paginate(10,false, ['query' => $search]);
+        $res = $this->getListData($res);
+//        var_dump($res);
+//        exit();
         return $res;
     }
 
 
+    //拼装topic
     public function getListData($article_list)
     {
         foreach ($article_list as $k => $v) {
@@ -35,6 +38,16 @@ class Article extends \think\Model {
             $article_list[$k]['topic_name'] = $topic_info['topic_name'];
         }
         return $article_list;
+    }
+
+    function edit($data=array()){
+        $res =  $this->where("id='".$data["id"]."'")->find();
+        if($res){
+            //后面的["tech_id" => $id]表示，更新这个id的数据
+            return $this->save($data,["id" => $data["id"]]);
+        }else{
+            return false;
+        }
     }
 
 }

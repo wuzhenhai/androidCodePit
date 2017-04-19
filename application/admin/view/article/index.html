@@ -8,10 +8,12 @@
     <div class="page-header">
         <h1>
             <!--{:model('menu')->getName()} {gt name="$Request.get.group_id" value="0"} [{:model('AdminGroup')->getGroupName($Request.get.group_id)}]{/gt}-->
-
+            <h1>
+                {:model('menu')->getName()}
+            </h1>
         </h1>
     </div><!-- /.page-header -->
-    <form name="form1" action="/admin/Article/index" method="POST">
+    <form name="form1" action="/admin/Article/index" method="GET">
 
     <div class="search_content flex ">
         <!--<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">-->
@@ -19,26 +21,28 @@
         <!--</button>-->
 
         <div class="search_com" style="width: 150px">
-            <p>语言类别</p>
-            <select id="tech_select"  class="small " name="tech_id" style="width: 100%">
-                <option value="0" >--请选择--</option>
-                {volist name="tech_list" id="tech"}
-                <option class="col-xs-10 col-sm-5"     value="{$tech.tech_id}">{$tech.tech_name}</option>
+            <p>技能类别</p>
+            <select id="skill_select"  class="small " name="skill_select_id" style="width: 100%">
+                <option value="-1" >--请选择--</option>
+                {volist name="skill_list" id="vo"}
+                <option value="{$vo.id}">{$vo.skill_name}</option>
                 {/volist}
             </select>
         </div>
 
         <div class="search_com" style="width: 150px">
-            <p>模块类别</p>
-            <select  id="module_select" class="small " name="module_id" style="width: 100%">
-                <option value="0" >--请选择--</option>
+            <p>专题</p>
+            <select  id="topic_select" class="small " name="topic_select_id" style="width: 100%">
+                <option value="-1" >--请选择--</option>
             </select>
         </div>
 
         <div class="search_com" style="width: 150px">
-            <p>专题</p>
-            <select  id="topic_select" class="small " name="topic_id" style="width: 100%">
-                <option value="0" >--请选择--</option>
+            <p>是否置顶</p>
+            <select  id="hot_select" class="small " name="hot_select_id" style="width: 100%">
+                <option value="-1" >--请选择--</option>
+                <option value="0" >否</option>
+                <option value="1" >是</option>
             </select>
         </div>
 
@@ -50,14 +54,16 @@
         <!--<div class="t-list" style="align-self: flex-end;margin-left: 100px;">-->
             <!--<button  type="submit" class="button button-3d button-action button-circle button-jumbo buttons">搜索</button>-->
         <!--</div>-->
-
-        <span class="btn btn-sm btn-primary pull-right"  >
-            搜索
-            <i class="icon-reply icon-only"></i>
-        </span>
+        <div class="search_com" style="vertical-align: bottom">
+            <p>&nbsp;</p>
+             <button type="submit" class="btn btn-sm btn-primary pull-right"  >
+                搜索
+                <i class="icon-reply icon-only"></i>
+            </button>
         </div>
 
-    </div>
+        </div>
+
     </form>
 
     <!--<button id="ajaxTest" style="width: 100px;height: 50px" onclick="loadXMLDoc()">AJAX请求</button>-->
@@ -78,6 +84,7 @@
                                     <!--</label>-->
                                 <!--</th>-->
                                 <th class="detail-col">序号</th>
+                                <th>封面</th>
                                 <th>文章</th>
                                 <th>专题名</th>
                                 <th>技能类型</th>
@@ -94,26 +101,27 @@
                                         <!--<span class="lbl"></span>-->
                                     <!--</label>-->
                                 <!--</td>-->
-                                <td style="text-align: center;vertical-align: middle" >{$vo.id}</td>
-                                <td > <a href="{$vo.url}" target="_blank" > {$vo.title}</a> </td>
+                                <td style="text-align: center;vertical-align: middle">{$vo.id}</td>
+                                <td style="text-align: center;vertical-align: middle"  width="8%"><img style="width: 50px;height: 50px;" src="{$vo.pic}" onerror="onError(this)"></td>
+                                <td style="vertical-align: middle" > <a href="{$vo.url}" target="_blank" > {$vo.title}</a> </td>
                                 <td style="vertical-align: middle;width: 10%" >{$vo.topic_name}</td>
                                 <td style="vertical-align: middle;width: 10%" >{$vo.skill_name}</td>
 
                                 <td width="10%">
                                     <div class="hidden-sm hidden-xs btn-group">
-                                    <span class="btn btn-xs btn-info" onclick="showEdit('{$vo.id}','{$vo.title}','{$vo.url}','{$vo.skill_id}','{$vo.topic_id}')">
+                                    <span class="btn btn-xs btn-info" title="编辑" onclick="showEdit('{$vo.id}','{$vo.title}','{$vo.url}','{$vo.is_hot}','{$vo.skill_id}','{$vo.topic_id}','{$vo.pic}')">
                                                 <i class="ace-icon fa fa-pencil bigger-120"></i>
                                             </span>
-                                        <span class="btn btn-xs btn-danger" onclick="delCheck({$vo.id})">
+                                        <span class="btn btn-xs btn-danger" title="删除" onclick="delCheck({$vo.id})">
                                                 <i class="ace-icon fa fa-trash-o bigger-120"></i>
                                             </span>
 
                                         {if condition="$vo.is_hot eq 1 "}
-                                        <span class="btn btn-xs btn-success" onclick="hot({$vo.id},0)">
+                                        <span class="btn btn-xs btn-success" title="置顶" onclick="hot({$vo.id},0)">
                                                 <i class="ace-icon fa fa-arrow-down bigger-120"></i>
                                             </span>
                                         {else /}
-                                        <span class="btn btn-xs btn-primary" onclick="hot({$vo.id},1)">
+                                        <span class="btn btn-xs btn-primary" title="置顶" onclick="hot({$vo.id},1)">
                                                 <i class="ace-icon fa fa-arrow-up bigger-120"></i>
                                             </span>
                                         {/if}
@@ -201,6 +209,11 @@
                 {/volist}
             </select>
             </div>
+            <div class="modal-body">
+                封面图片：<img src="" id="article_pic" onerror="onError(this)"/>
+            </select>
+            </div>
+
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -208,7 +221,7 @@
                 <button type="button" id="save" class="btn btn-primary" onclick="add()">
                     添加
                 </button>
-                <button type="button" id="edit" class="btn btn-primary" onclick="editSkill()">
+                <button type="button" id="edit" class="btn btn-primary" onclick="editTopic()">
                     编辑
                 </button>
             </div>
@@ -236,7 +249,15 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
+<style type="text/css">
+    #article_pic{
+        margin-bottom:10px;
+        height: 120px;
+        width: 120px;
+        border: 1px solid #e0e0e0;
+        cursor:pointer;
+    }
+</style>
 <script>
     //显示添加框
     function showAdd() {
@@ -249,12 +270,25 @@
 
     //根据技能选择专题
     $("#skill_list").change(function () {
-        var skill_name = $(this).find("option:selected").text();
         var skill_id = $(this).find("option:selected").val();
+        getTopicTitleList(skill_id,0,$("#topic_list"));
+    });
 
+    //根据技能选择专题
+    $("#skill_select").change(function () {
+        var skill_id = $(this).find("option:selected").val();
+        getTopicTitleList(skill_id,0,$("#topic_select"));
+    });
+
+    /**
+     * 获取topic列表
+     * @param skill_name
+     * @param skill_id
+     * @param topic_id
+     */
+    function getTopicTitleList(skill_id,topic_id,select_obj){
         $.post("/admin/Article/ajax_topic_list",
                 {
-                    skill_name: skill_name,
                     skill_id: skill_id,
                 },
                 function (data) {
@@ -262,14 +296,18 @@
                     console.log(data);
                     data = JSON.parse(data);
 
-                    var html = '<option value="0" >--请选择--</option>';
+                    var html = '<option value="-1" >--请选择--</option>';
                     for (var i = 0; i < data.length; i++) {
                         html += '  <option class="col-xs-10 col-sm-5" value="' + data[i].id + '">' + data[i].topic_name + '</option>';
                     }
 
-                    $("#topic_list").html(html);
+                    $(select_obj).html(html);
+
+                    if(topic_id!=0){
+                        $(select_obj).val(topic_id);
+                    }
                 });
-    });
+    }
 
 
     //添加文章
@@ -348,43 +386,64 @@
             id,
             name,
             url,
+            is_hot,
             skill_id,
-            topic_id
+            topic_id,
+            pic
             ) {
         edit_id = id;
+        t_id = topic_id;
         $("#save").hide();
         $("#edit").show();
 
         $('#title').val(name); //标题
         $('#article_url').val(url); //标题
+        $('#article_pic').attr("src",pic); //封面
+        //设置下拉菜单选中
+        $('#is_hot').val(is_hot);
+        $('#skill_list').val(skill_id);
 
-        var s_id = $('#skill_list').val();
-        var t_id = $('#topic_list').val();
+        getTopicTitleList(skill_id,topic_id);
+
+//        var s_id = $('#skill_list').val();
+//        var t_id = $('#topic_list').val();
 
 
-        $("#skill_list option").each(function(){
-            var t_id = $(this).attr("value");
-            //alert($(this).attr("value")+"--"+skill_id);
-            if( t_id == skill_id){
-                $(this).attr('selected', 'selected');
-            }
-        });
-
-        $("#topic_list option").val(topic_id);
+//        $("#skill_list option").each(function(){
+//            var t_id = $(this).attr("value");
+//            //alert($(this).attr("value")+"--"+skill_id);
+//            if( t_id == skill_id){
+//                $(this).attr('selected', 'selected');
+//            }
+//        });
+//
+//        $("#topic_list option").val(topic_id);
 
         $("#myModalLabel").html("编辑文章");
         $("#addModal").modal('show');
     }
 
-    function editSkill() {
-        edit_name = $('#topic_name').val();
+    function editTopic() {
+        var title = $('#title').val(); //标题
+        var url = $('#article_url').val(); //链接
+        var pic = $('#article_pic').attr("src"); //图片地址
         var skill_id = $('#skill_list').val();
-        $.post("edit", {"id": edit_id, "topic_name": edit_name,"skill_id":skill_id}, function (data) {
-            if (data == "success") {
+        var topic_id = $('#topic_list').val();
+        var is_hot = $('#is_hot').val();
+        $.post("edit", {
+            "id": edit_id,
+            "skill_id":skill_id,
+            "topic_id":topic_id,
+            "url":url,
+            "pic":pic,
+            "is_hot":is_hot,
+        }, function (data) {
+            console.log(data);
+            var res = $.parseJSON(data);
+            if (res['code'] == 0) {
                 location.reload();
             } else {
-                console.log("edit fail");
-                alert(data);
+                alert(res['msg']);
             }
         })
     }
@@ -404,6 +463,42 @@
                         alert(data);
                     }
                 })
+    }
+
+    setUploadEvt($('#article_pic'));
+    function setUploadEvt(btn){
+        // 上传二维码
+        new AjaxUpload(btn, {
+            action: "uploadHandler",
+            name: "imgFile",
+            responseType: "json",
+            onSubmit: function(){
+                //alert('正在上传');
+                //preview处的图片改为loading图片
+            },
+            onChange: function(file, extension){
+                if (extension && /^(jpg|png|jpeg|gif)$/.test(extension)) {
+                    return true;
+                }
+                else {
+                    alert('暂不支持该图片格式！');
+                    return false;
+                }
+            },
+            onComplete: function(file, response){
+                if (response.status === 0) {
+                    alert(response.msg);
+                }
+                else if (response.status === 1) {
+                    //alert(response.img_url);
+                    btn.attr("src",response.img_url);
+                }
+            }
+        });
+    }
+
+    function onError(obj){
+        $(obj).attr("src","/img/nopic.png");
     }
 
 
