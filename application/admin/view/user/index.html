@@ -1,0 +1,252 @@
+<div class="page-content">
+    <!--<div class="col-sm-6 pull-right">-->
+        <!--<span class="btn btn-sm btn-primary pull-right" onclick="showAdd()">-->
+            <!--添加-->
+            <!--<i class="icon-reply icon-only"></i>-->
+        <!--</span>-->
+    <!--</div>-->
+    <div class="page-header">
+        <h1>
+            {:model('menu')->getName()}
+        </h1>
+    </div><!-- /.page-header -->
+
+    <div class="row">
+        <div class="col-xs-12">
+            <!-- PAGE CONTENT BEGINS -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <table id="simple-table" class="table  table-bordered table-hover">
+                        <thead>
+                        <tr>
+
+                            <th class="detail-col" width="5%">序号</th>
+                            <th >头像</th>
+                            <th >用户名</th>
+                            <th >手机号码</th>
+                            <th >昵称</th>
+                            <th >注册时间</th>
+                            <th >状态</th>
+                            <th >操作</th>
+
+                            <!--<th>管理员操作</th>-->
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {volist name="user_list" id="vo"}
+                        <tr>
+                            <td width="2%">{$vo.user_id}</td>
+                            <td width="3%" style="text-align: center;vertical-align: middle"><img id="article_pic" src="{$vo.head_img}" onerror="onError(this)"/></td>
+                            <td width="15%"><span>{$vo.realname}</span></td>
+                            <td width="15%"><span>{$vo.mobile}</span></td>
+                            <td width="15%"><span>{$vo.nickname}</span></td>
+                            <td width="15%"><span>{:date('Y-m-d',$vo.reg_time)}</span></td>
+                            <td width="5%"><span>{if $vo.is_enable eq 1}正常{else}冻结中{/if}</span></td>
+
+                            <td width="10%">
+                                <div class="hidden-sm hidden-xs btn-group">
+                                    <span class="btn btn-xs btn-info" onclick="" title="查看详情">
+                                        <i class="ace-icon fa fa-user bigger-120"></i>
+                                    </span>
+                                    {if $vo.is_enable eq 1}
+                                    <span class="btn btn-xs btn-danger" onclick="" title="冻结账户">
+                                        <i class="ace-icon fa fa-ban bigger-120"></i>
+                                    </span>
+                                    {else}
+                                    <span class="btn btn-xs btn-success" onclick="" title="启用账户">
+                                        <i class="ace-icon fa fa-check bigger-120"></i>
+                                    </span>
+                                    {/if}
+
+                                </div>
+
+                                <div class="hidden-md hidden-lg">
+                                    <div class="inline pos-rel">
+                                            <span class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+                                                <i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+                                            </span>
+
+                                        <ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+
+
+                                            <li>
+                                                <a class="tooltip-success" data-rel="tooltip" title="Edit">
+                                                        <span class="green"
+                                                              onclick="">
+                                                            <i class="ace-icon fa fa-pencil-square-o bigger-120"></i>
+                                                        </span>
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <span class="red" onclick="d">
+                                                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                                        </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page}
+                </div><!-- /.span -->
+            </div><!-- /.row -->
+
+            <!-- PAGE CONTENT ENDS -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</div><!-- /.page-content -->
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    添加yongh
+                </h4>
+            </div>
+            <div class="modal-body">
+                技能名称：<input title="" id="skill_name" type="text" name="skill_name"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" id="save" class="btn btn-primary" onclick="addSkill()">
+                    添加
+                </button>
+                <button type="button" id="edit" class="btn btn-primary" onclick="editSkill()">
+                    编辑
+                </button>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!-- 信息删除确认 -->
+<div class="modal fade" id="delModal">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h4 class="modal-title">提示信息</h4>
+            </div>
+            <div class="modal-body">
+                <p>您确认要删除吗？</p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="url"/>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a onclick="del()" class="btn btn-primary" data-dismiss="modal">确定</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<script type="text/javascript">
+    function showAdd() {
+        $("#save").show();
+        $("#edit").hide();
+        $('#skill_name').val('');
+        $("#myModalLabel").html("添加技能分类");
+        $("#addModal").modal('show');
+    }
+
+    function addSkill() {
+        console.log("add");
+        var skill_name = $('#skill_name').val();
+        $.post("add", {"skill_name": skill_name}, function (data) {
+            if (data == "success") {
+                location.reload();
+            } else {
+                alert(data);
+            }
+        })
+    }
+
+    var del_id = 0;
+    function delCheck(id) {
+        del_id = id;
+        $("#delModal").modal('show');
+    }
+
+    function del() {
+        $.post("del", {"id": del_id}, function (data) {
+            if (data == "success") {
+                location.reload();
+            } else {
+                alert(data);
+            }
+        })
+    }
+
+    var edit_id = 0;
+    var edit_name = "";
+    function showEdit(id, name) {
+        edit_id = id;
+        $("#save").hide();
+        $("#edit").show();
+        $('#skill_name').val(name);
+        $("#myModalLabel").html("编辑技能分类");
+        $("#addModal").modal('show');
+    }
+
+    function editSkill() {
+        edit_name = $('#skill_name').val();
+        $.post("edit", {"id": edit_id, "skill_name": edit_name}, function (data) {
+            if (data == "success") {
+                location.reload();
+            } else {
+                console.log("edit fail");
+                alert(data);
+            }
+        })
+    }
+
+    function onError(obj){
+        $(obj).attr("src","/img/nopic.png");
+    }
+</script>
+
+<style>
+    #action span {
+        margin-left: 2px;
+        float: left !important;
+    }
+
+    #article_pic{
+        height: 50px;
+        width: 50px;
+        vertical-align: middle;
+        /*border: 1px solid #e0e0e0;*/
+    }
+
+    /*#simple-table img{*/
+        /*text-align: center;*/
+        /*vertical-align: middle;*/
+    /*}*/
+
+    #simple-table th{
+        text-align: center;
+    }
+
+    #simple-table td{
+        text-align: center;
+        vertical-align: middle;
+    }
+
+</style>
+
+
+

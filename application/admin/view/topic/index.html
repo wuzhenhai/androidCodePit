@@ -37,7 +37,8 @@
                         <thead>
                         <tr>
 
-                            <th class="detail-col" width="5%">序号</th>
+                            <th class="detail-col">序号</th>
+                            <th >封面</th>
                             <th >专题名</th>
                             <th >操作</th>
                             <!--<th>管理员操作</th>-->
@@ -47,7 +48,8 @@
                         <tbody>
                         {volist name="lists" id="vo"}
                         <tr>
-                            <td width="5%">{$vo.id}</td>
+                            <td style="text-align: center;vertical-align: middle" width="3%">{$vo.id}</td>
+                            <td style="text-align: center;vertical-align: middle"  width="8%"><img style="width: 50px;height: 50px;" src="{$vo.pic}" onerror="onError(this)"></td>
                             <td width="70%">{$vo.topic_name}</td>
                             <td width="10%">
                                 <div class="hidden-sm hidden-xs btn-group">
@@ -125,6 +127,11 @@
                     {volist name="skill_list" id="vo"}
                         <option value="{$vo.id}">{$vo.skill_name}</option>
                     {/volist}
+                </select>
+            </div>
+
+            <div class="modal-body">
+                封面图片：<img src="" id="article_pic" onerror="onError(this)"/>
                 </select>
             </div>
 
@@ -233,8 +240,9 @@
 
     function editSkill() {
         edit_name = $('#topic_name').val();
+        var pic = $('#article_pic').attr("src");
         var skill_id = $('#skill_list').val();
-        $.post("edit", {"id": edit_id, "topic_name": edit_name,"skill_id":skill_id}, function (data) {
+        $.post("edit", {"id": edit_id, "topic_name": edit_name,"skill_id":skill_id,"pic":pic}, function (data) {
             if (data == "success") {
                 location.reload();
             } else {
@@ -244,7 +252,37 @@
         })
     }
 
-
+    setUploadEvt($('#article_pic'));
+    function setUploadEvt(btn){
+        // 上传二维码
+        new AjaxUpload(btn, {
+            action: "uploadHandler",
+            name: "imgFile",
+            responseType: "json",
+            onSubmit: function(){
+                //alert('正在上传');
+                //preview处的图片改为loading图片
+            },
+            onChange: function(file, extension){
+                if (extension && /^(jpg|png|jpeg|gif)$/.test(extension)) {
+                    return true;
+                }
+                else {
+                    alert('暂不支持该图片格式！');
+                    return false;
+                }
+            },
+            onComplete: function(file, response){
+                if (response.status === 0) {
+                    alert(response.msg);
+                }
+                else if (response.status === 1) {
+                    //alert(response.img_url);
+                    btn.attr("src",response.img_url);
+                }
+            }
+        });
+    }
 //    function getTopicById(id){
 //        $.post("ajax_get_topic", {"topic_id": id}, function (data) {
 //            var res = $.parseJSON(data);
@@ -255,12 +293,22 @@
 //            }
 //        })
 //    }
+    function onError(obj){
+        $(obj).attr("src","/img/nopic.png");
+    }
 </script>
 
 <style>
     #action span {
         margin-left: 2px;
         float: left !important;
+    }
+    #article_pic{
+        margin-bottom:10px;
+        height: 120px;
+        width: 120px;
+        border: 1px solid #e0e0e0;
+        cursor:pointer;
     }
 </style>
 

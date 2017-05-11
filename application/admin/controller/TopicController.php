@@ -89,7 +89,7 @@ class TopicController extends CommonController {
         $data = input();
         $topic_obj = new Topic();
         $r = $topic_obj->edit($data['id'],$data);
-        if($r){
+        if($r!==false){
             exit("success");
         }else {
             exit("failure");
@@ -111,6 +111,22 @@ class TopicController extends CommonController {
             exit("success");
         } else {
             exit("failure");
+        }
+    }
+
+    /**
+     * 图上传处理
+     *
+     * @author zhengzhen
+     * @return string 返回JSON字符串
+     * @todo 调用upImageHandler函数处理上传图片
+     *
+     */
+    public function uploadHandler()
+    {
+        $imgUrl =  upImageHandler($_FILES['imgFile'], '/article/thumb');
+        if($imgUrl!=""){
+            exit(json_encode(array('status' => 1, 'img_url' => $imgUrl)));
         }
     }
 }

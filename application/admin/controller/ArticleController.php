@@ -239,7 +239,7 @@ class ArticleController extends CommonController {
     }
 
     /**
-     * 文章预览图上传处理
+     * 图上传处理
      *
      * @author zhengzhen
      * @return string 返回JSON字符串
