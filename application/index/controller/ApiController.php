@@ -8,9 +8,8 @@
 
 namespace application\index\controller;
 
-use think\Controller;
-
-class ApiController extends Controller
+use application\index\model\Api;
+class ApiController extends BaseApiController
 {
     private $api_type;
     private $api_name;
@@ -25,7 +24,7 @@ class ApiController extends Controller
         $params = $_REQUEST;
         $this->parseRequest();
         $res = $this->callApi($params);
-        $this->returnResult(0,$res);
+        Api::returnResult(0,$res);
     }
 
 
@@ -42,7 +41,7 @@ class ApiController extends Controller
 //        print_r($requests);
 //        exit();
         //引入命名空间后的修改
-        $this->api_type = __NAMESPACE__."\\".ucfirst($requests[1])."Controller";
+        $this->api_type = __NAMESPACE__."\\".ucfirst($requests[1])."ApiController";
         $this->api_name = $requests[2];
     }
 
@@ -62,34 +61,6 @@ class ApiController extends Controller
     }
 
 
-    /**
-     *
-     * @author 姜伟
-     * @param int $code 返回码
-     * @param array $data 返回结果
-     * @param string $error_msg 错误说明
-     * @return
-     * @todo
-     */
-    static function returnResult($code = 0, $data = array(), $error_msg = '')
-    {
-        if ($code)
-        {
-            $return_arr = array(
-                'code'		=> $code,
-                'error_msg'	=> $error_msg
-            );
 
-            exit(json_encode($return_arr));
-        }
-
-        $return_arr = array(
-            'code'	=> 0,
-            'data'	=> $data,
-        );
-        exit(json_encode($return_arr));	//上线后开启
-//        print_r($return_arr);	//调试时开启
-//        exit;
-    }
 
 }

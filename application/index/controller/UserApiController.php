@@ -11,10 +11,11 @@ namespace application\index\controller;
 
 use application\index\model\User;
 
-class UserController
+class UserApiController extends BaseApiController
 {
-    public function getUserName() {
+    public function getUserList($param) {
         $user_obj = new User();
+        var_dump($param);
         $user_list = $user_obj->getUserList();
         return $user_list;
     }
