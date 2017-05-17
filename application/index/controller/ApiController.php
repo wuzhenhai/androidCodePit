@@ -8,6 +8,14 @@
 
 namespace application\index\controller;
 
+
+/**
+ * 请求地址  http://ServerHost/index/api/api?api_name=abc.user.getUserList&abc=123
+ * abc可以自定义
+ * user控制器名称
+ * getUserList方法名
+ * & 后面都是参数
+ */
 use application\index\model\Api;
 class ApiController extends BaseApiController
 {
