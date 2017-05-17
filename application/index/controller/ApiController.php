@@ -17,6 +17,8 @@ namespace application\index\controller;
  * & 后面都是参数
  */
 use application\index\model\Api;
+use application\index\model\User;
+
 class ApiController extends BaseApiController
 {
     private $api_type;
@@ -29,8 +31,37 @@ class ApiController extends BaseApiController
     }
 
     function api(){
-        $params = $_REQUEST;
+        header("Content-Type:text/html; charset=utf-8");
+
+        $user_id = intval(session('user_id'));
+        //var_dump($user_id);
+        //exit();
+//        if (isset($_REQUEST['PHPSESSID']) && $_REQUEST['PHPSESSID'] && $user_id) {
+//            $user_obj  = new User();
+//            $user_info = $user_obj->getUserInfoById($user_id,'role_type');
+//            $role_type = $user_info['role_type'];
+//        }
+
+        //验证参数
+        $api_obj = new Api();
+        //格式化成验证格式
+        $params = $api_obj->getRequiredParams();
+        //开始验证每个参数有效性
+        $params = $api_obj->checkParamsValid($params);
+
+        //取得token,测试用
+        //$token         = $api_obj->generateSign($params);
+        //$params['token'] = $token;
+
+        //正式服务器上开启验证
+        if (PHP_OS == "LINUX" && !$api_obj->checkPriv()) {
+            $api_obj->permissionDeny();
+            exit;
+        }
+
+        //做好请求对应控制器方法的初始化
         $this->parseRequest();
+        //开始请求
         $res = $this->callApi($params);
         Api::returnResult(0,$res);
     }

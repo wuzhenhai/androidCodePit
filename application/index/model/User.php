@@ -20,4 +20,12 @@ class User extends Model
     function getUserList($where=''){
         return  $this ->where($where)->select();
     }
+
+    function getUserInfo($fields,$where){
+        return  $this->field($fields)->where($where)->find();
+    }
+
+    function getUserInfoById($fields,$id){
+        return  $this->field($fields)->where('user_id='.$id)->find();
+    }
 }
