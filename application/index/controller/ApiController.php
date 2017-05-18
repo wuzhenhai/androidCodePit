@@ -34,14 +34,6 @@ class ApiController extends BaseApiController
         header("Content-Type:text/html; charset=utf-8");
 
 
-        //var_dump($user_id);
-        //exit();
-//        if (isset($_REQUEST['PHPSESSID']) && $_REQUEST['PHPSESSID'] && $user_id) {
-//            $user_obj  = new User();
-//            $user_info = $user_obj->getUserInfoById($user_id,'role_type');
-//            $role_type = $user_info['role_type'];
-//        }
-
         //header cookie 里面带PHPSESSID ，设置成指定session_id
         if (isset($_COOKIE['PHPSESSID']) && $_COOKIE['PHPSESSID'])
         {
@@ -52,11 +44,9 @@ class ApiController extends BaseApiController
             }
         }
 
-
-
         //验证参数
         $api_obj = new Api();
-        //格式化成验证格式
+        //构造接口参数的格式
         $params = $api_obj->getRequiredParams();
         //开始验证每个参数有效性
         $api_obj->checkParamsValid($params);

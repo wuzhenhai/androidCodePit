@@ -59,10 +59,14 @@ class UserApiController extends BaseApiController
         }
     }
 
+
+    //构造验证参数
     function getParams($func_name)
     {
         $params = array(
+            //调用方法
             'login' => array(
+                //各种参数
                 array(
                     'field'		=> 'username',
                     'type'		=> 'string',
