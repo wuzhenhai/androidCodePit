@@ -33,7 +33,7 @@ class ApiController extends BaseApiController
     function api(){
         header("Content-Type:text/html; charset=utf-8");
 
-        $user_id = intval(session('user_id'));
+
         //var_dump($user_id);
         //exit();
 //        if (isset($_REQUEST['PHPSESSID']) && $_REQUEST['PHPSESSID'] && $user_id) {
@@ -42,11 +42,32 @@ class ApiController extends BaseApiController
 //            $role_type = $user_info['role_type'];
 //        }
 
+        //header cookie 里面带PHPSESSID ，设置成指定session_id
+        if (isset($_COOKIE['PHPSESSID']) && $_COOKIE['PHPSESSID'])
+        {
+            session_id($_COOKIE['PHPSESSID']);
+            $user_id = intval(session('user_id'));
+            if($user_id){
+                //用户信息存在
+            }
+        }
+
+
+
         //验证参数
         $api_obj = new Api();
         //格式化成验证格式
         $params = $api_obj->getRequiredParams();
         //开始验证每个参数有效性
+        $api_obj->checkParamsValid($params);
+
+
+        //做好请求对应控制器方法的初始化
+        $this->parseRequest();
+
+        //验证方法参数的有效性
+        $new_api_obj = new $this->api_type();
+        $params      = $new_api_obj->getParams($this->api_name);
         $params = $api_obj->checkParamsValid($params);
 
         //取得token,测试用
@@ -59,8 +80,7 @@ class ApiController extends BaseApiController
             exit;
         }
 
-        //做好请求对应控制器方法的初始化
-        $this->parseRequest();
+
         //开始请求
         $res = $this->callApi($params);
         Api::returnResult(0,$res);

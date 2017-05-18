@@ -281,3 +281,17 @@ function utf8_strlen($str)
     }
     return $count;
 }
+
+
+function log_file($str, $file_name = '', $daily_write = false, $user_id = 0)
+{
+    $sess_user_id = intval(session('user_id'));
+    if ( $user_id == 0 || ($user_id == $sess_user_id) )
+    {
+        $file_path = 'logs/';
+        $file_path .= $file_name ? $file_name . ($daily_write ? '.' . date('Y-m-d', time()) : '') . '.log' : 'event.' . date('Y-m-d', time()) . '.log';
+        $file = fopen($file_path, 'a');
+        fwrite($file, date('Y-m-d H:i:s', time()) . "\n" . $str . "\n");
+        fclose($file);
+    }
+}
