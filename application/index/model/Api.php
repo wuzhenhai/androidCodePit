@@ -25,16 +25,16 @@ class Api  extends Model
     function getRequiredParams()
     {
         $params = array(
-            array(
-                'field'		=> 'appid',
-                'type'		=> 'string',
-                'required'	=> true,
-                'miss_code'	=> 41008,
-                'empty_code'=> 44008,
-                'type_code'	=> 45008,
-                'func'		=> 'checkAppid',
-                'func_code'	=> 47008,
-            ),
+//            array(
+//                'field'		=> 'appid',
+//                'type'		=> 'string',
+//                'required'	=> true,
+//                'miss_code'	=> 41008,
+//                'empty_code'=> 44008,
+//                'type_code'	=> 45008,
+//                'func'		=> 'checkAppid',
+//                'func_code'	=> 47008,
+//            ),
             array(
                 'field'		=> 'api_name',
                 'required'	=> true,
@@ -55,15 +55,15 @@ class Api  extends Model
 //                'empty_code'=> 44010,
 //                'type_code'	=> 45010,
 //            ),
-            array(
-                'field'		=> 'PHPSESSID',
-                'type'		=> 'string',
-                #'required'	=> true,
-                #'miss_code'	=> 41011,
-                'type_code'	=> 45011,
-                'func'		=> 'checkPHPSESSID',
-                'func_code'	=> 40011,
-            ),
+//            array(
+//                'field'		=> 'PHPSESSID',
+//                'type'		=> 'string',
+//                #'required'	=> true,
+//                #'miss_code'	=> 41011,
+//                'type_code'	=> 45011,
+//                'func'		=> 'checkPHPSESSID',
+//                'func_code'	=> 40011,
+//            ),
         );
 
         return $params;
