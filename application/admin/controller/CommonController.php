@@ -45,9 +45,9 @@ class CommonController extends Controller {
         if (!$user_id) {
             return false;
         }
-        if($user_id==1){
+//        if($user_id==1){
             return true;
-        }
+//        }
         $c = strtolower(request()->controller());
         $a = strtolower(request()->action());
 
