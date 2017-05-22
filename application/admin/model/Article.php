@@ -14,7 +14,7 @@ namespace application\admin\model;
 class Article extends \think\Model {
 
     public function getList($where="",$search=[]) {
-        $res = $this->where($where)->order('id', 'asc') ->paginate(10,false, ['query' => $search]);
+        $res = $this->where($where)->order('id', 'desc') ->paginate(10,false, ['query' => $search]);
         $res = $this->getListData($res);
 //        var_dump($res);
 //        exit();
