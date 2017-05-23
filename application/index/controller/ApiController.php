@@ -60,9 +60,9 @@ class ApiController extends BaseApiController
         $params      = $new_api_obj->getParams($this->api_name);
         $params = $api_obj->checkParamsValid($params);
 
-        //取得token,测试用
-        //$token         = $api_obj->generateSign($params);
-        //$params['token'] = $token;
+//        //取得token,测试用
+        $token         = $api_obj->generateSign($params);
+        $params['token'] = $token;
 
         //正式服务器上开启验证
         if (PHP_OS == "LINUX" && !$api_obj->checkPriv()) {
