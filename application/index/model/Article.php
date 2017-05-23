@@ -13,8 +13,8 @@ class  Article extends Model {
 //        $this->name="article";
 //    }
 
-    function getArticleList($where='',$limit=''){
-        $article_list=$this->where($where)->order('create_time desc')->limit($limit)->select();
+    function getArticleList($where='',$offset='',$length=''){
+        $article_list=$this->where($where)->order('create_time desc')->limit($offset,$length)->select();
 
         foreach ($article_list as $k => $v) {
             //获取专题
@@ -31,6 +31,11 @@ class  Article extends Model {
         return  $article_list;
     }
 
+
+    public function getArticleNum($where = '')
+    {
+        return $this->where($where)->count();
+    }
 
 
 }
